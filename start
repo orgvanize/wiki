@@ -1,0 +1,18 @@
+#!/bin/sh
+
+readonly URL='\(.\+\)://\(.\+\):\(.\+\)@\(.\+\):\(.\+\)/\(.\+\)'
+
+if [ -z "$DATABASE_URL" ]
+then
+	echo '$DATABASE_URL missing from environment' >&2
+	exit 1
+fi
+
+export DATABASE_TYPE="`echo "$DATABASE_URL" | sed "s|$URL|\1|"`"
+export DATABASE_USER="`echo "$DATABASE_URL" | sed "s|$URL|\2|"`"
+export DATABASE_PASS="`echo "$DATABASE_URL" | sed "s|$URL|\3|"`"
+export DATABASE_HOST="`echo "$DATABASE_URL" | sed "s|$URL|\4|"`"
+export DATABASE_PORT="`echo "$DATABASE_URL" | sed "s|$URL|\5|"`"
+export DATABASE_NAME="`echo "$DATABASE_URL" | sed "s|$URL|\6|"`"
+unset DATABASE_URL
+exec node server
